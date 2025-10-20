@@ -4,7 +4,9 @@ import pandas as pd
 import numpy as np
 
 
-data_frame = pd.read_csv(r'C:\Users\cho\Desktop\StatistikaProj\data\filmovi.csv', encoding='utf-8')
+data_frame = pd.read_csv(
+    r"C:\Users\cho\Desktop\StatistikaProj\data\filmovi.csv", encoding="utf-8"
+)
 
 links = np.asarray(data_frame["Letterboxd URI"])
 cast_rows = []
@@ -12,13 +14,15 @@ count = 0
 
 for link in links:
     try:
-        page_to_scrape = requests.get(link, headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
+        page_to_scrape = requests.get(
+            link, headers={"User-Agent": "Mozilla/5.0"}, timeout=10
+        )
         soup = BeautifulSoup(page_to_scrape.text, "html.parser")
         cast = soup.select('a[href^="/actor/"]')
         cast_list = [actor.get_text(strip=True) for actor in cast]
 
         top_3_cast = cast_list[:3]  # uzimamo samo prva 3 glumca
-        formatted_cast = '|'.join(top_3_cast)
+        formatted_cast = "|".join(top_3_cast)
 
         print(formatted_cast)
         cast_rows.append(formatted_cast)
@@ -31,7 +35,7 @@ for link in links:
 
 df = pd.DataFrame(cast_rows)
 
-output_file = 'cast.csv'
-df.to_csv(output_file, index=False, header=False, encoding='utf-8-sig')
+output_file = "cast.csv"
+df.to_csv(output_file, index=False, header=False, encoding="utf-8-sig")
 
 print(f"Cast saved to {output_file}")
